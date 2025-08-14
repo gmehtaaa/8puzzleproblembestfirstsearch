@@ -8,8 +8,7 @@ using namespace std;
 struct Node {
     vector<vector<int>> state;
     vector<vector<vector<int>>> path;
-    int heuristic; // h(n) = misplaced tiles count
-};
+    int heuristic; 
 
 bool is_goal(const vector<vector<int>>& state) {
     vector<vector<int>> goal = {{1, 2, 3}, {4, 5, 6}, {7, 8, 0}};
@@ -40,25 +39,21 @@ vector<vector<vector<int>>> generate_moves(vector<vector<int>> state) {
     int x = blank_pos.first;
     int y = blank_pos.second;
 
-    // Move up
     if (x > 0) {
         swap(state[x][y], state[x-1][y]);
         moves.push_back(state);
         swap(state[x][y], state[x-1][y]);
     }
-    // Move down
     if (x < 2) {
         swap(state[x][y], state[x+1][y]);
         moves.push_back(state);
         swap(state[x][y], state[x+1][y]);
     }
-    // Move left
     if (y > 0) {
         swap(state[x][y], state[x][y-1]);
         moves.push_back(state);
         swap(state[x][y], state[x][y-1]);
     }
-    // Move right
     if (y < 2) {
         swap(state[x][y], state[x][y+1]);
         moves.push_back(state);
@@ -71,7 +66,7 @@ vector<vector<vector<int>>> generate_moves(vector<vector<int>> state) {
 void best_first_search(vector<vector<int>> start) {
     struct Compare {
         bool operator()(Node a, Node b) {
-            return a.heuristic > b.heuristic; // Min-heap by h(n)
+            return a.heuristic > b.heuristic; 
         }
     };
 
@@ -84,7 +79,6 @@ void best_first_search(vector<vector<int>> start) {
         Node current = pq.top();
         pq.pop();
 
-        // Create unique key for visited set
         string key;
         for (int i = 0; i < current.state.size(); i++)
             for (int j = 0; j < current.state[i].size(); j++)
@@ -94,11 +88,9 @@ void best_first_search(vector<vector<int>> start) {
             continue;
         visited.insert(key);
 
-        // Append current state to path
         vector<vector<vector<int>>> path = current.path;
         path.push_back(current.state);
 
-        // Goal check
         if (is_goal(current.state)) {
             cout << "\n--- Solution Found (Best First Search - Misplaced Tiles) ---\n";
             for (int s = 0; s < path.size(); s++) {
@@ -112,7 +104,6 @@ void best_first_search(vector<vector<int>> start) {
             return;
         }
 
-        // Generate next moves
         vector<vector<vector<int>>> moves = generate_moves(current.state);
         for (int m = 0; m < moves.size(); m++) {
             string mkey;
